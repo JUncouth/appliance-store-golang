@@ -27,7 +27,7 @@ docker compose up -d --build
 ## pgadmin
 
 - после запуска доступен по адресу:
-https://xoxotyh-appliance-store/admin
+https://xoxotyh-appliance-store/admin (данные для входа в example.env)
 
 ## SWAGGER-документация
 
