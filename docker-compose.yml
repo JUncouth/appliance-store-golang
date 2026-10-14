@@ -89,6 +89,8 @@ services:
         condition: service_started
       api-help2:
         condition: service_started
+      pgadmin:
+        condition: service_started
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/certs:/etc/nginx/certs:ro
