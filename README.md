@@ -26,6 +26,4 @@ docker compose up -d --build
 ## SWAGGER-документация
 
 - после запуска приложения доступна по адресу:
-https://xoxotyh-appliance-store/api или
-https://xoxotyh-appliance-store/api/v1 или
-https://xoxotyh-appliance-store/docs/swagger/index.html
+https://xoxotyh-appliance-store/api
