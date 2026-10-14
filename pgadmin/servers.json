@@ -1,0 +1,14 @@
+{
+    "Servers": {
+        "1": {
+            "Name": "Appliance Store",
+            "Group": "Servers",
+            "Host": "postgres",
+            "Port": 5432,
+            "MaintenanceDB": "storeapi",
+            "Username": "storeapi",
+            "SSLMode": "prefer",
+            "ConnectNow": true
+        }
+    }
+}

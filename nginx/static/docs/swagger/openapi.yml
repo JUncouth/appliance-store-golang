@@ -1,0 +1,960 @@
+components:
+  schemas:
+    AddProductPhotoRequest:
+      properties:
+        image_id:
+          example: 550e8400-e29b-41d4-a716-446655440001
+          type: string
+      type: object
+    AddressDTO:
+      properties:
+        city:
+          example: Moscow
+          type: string
+        country:
+          example: Russia
+          type: string
+        street:
+          example: Leninskiy Avenue, 30
+          type: string
+      type: object
+    ClientCreateRequest:
+      properties:
+        address:
+          $ref: '#/components/schemas/AddressDTO'
+          type: object
+        birthday:
+          example: "2000-01-01"
+          type: string
+        client_name:
+          example: Mike
+          type: string
+        client_surname:
+          example: Wazovski
+          type: string
+        gender:
+          example: male
+          type: string
+        registration_date:
+          example: "2026-01-15T10:00:00Z"
+          type: string
+      type: object
+    ClientResponse:
+      properties:
+        address:
+          $ref: '#/components/schemas/AddressDTO'
+          type: object
+        birthday:
+          example: "2000-01-01"
+          type: string
+        client_name:
+          example: Mike
+          type: string
+        client_surname:
+          example: Wazovski
+          type: string
+        gender:
+          example: male
+          type: string
+        id:
+          example: 550e8400-e29b-41d4-a716-446655440000
+          type: string
+        registration_date:
+          example: "2026-01-15T10:00:00Z"
+          type: string
+      type: object
+    DecreaseStockRequest:
+      properties:
+        quantity:
+          example: 2
+          type: integer
+      type: object
+    ErrorResponse:
+      properties:
+        error:
+          example: resource not found
+          type: string
+      type: object
+    ImageCreateRequest:
+      properties:
+        image:
+          example: iVBORw0KGgoAAAANSUhEUg...
+          type: string
+      type: object
+    ImageReplaceRequest:
+      properties:
+        image:
+          example: iVBORw0KGgoAAAANSUhEUg...
+          type: string
+      type: object
+    ImageResponse:
+      properties:
+        id:
+          example: 550e8400-e29b-41d4-a716-446655440001
+          type: string
+      type: object
+    ProductCreateRequest:
+      properties:
+        available_stock:
+          example: 25
+          type: integer
+        category:
+          example: Kitchen Appliances
+          type: string
+        image_id:
+          example: 550e8400-e29b-41d4-a716-446655440001
+          nullable: true
+          type: string
+        name:
+          example: Microwave Oven
+          type: string
+        price:
+          example: 129.99
+          type: number
+        supplier_id:
+          example: 550e8400-e29b-41d4-a716-446655440000
+          type: string
+      type: object
+    ProductResponse:
+      properties:
+        available_stock:
+          example: 25
+          type: integer
+        category:
+          example: Kitchen Appliances
+          type: string
+        id:
+          example: 550e8400-e29b-41d4-a716-446655440002
+          type: string
+        image_id:
+          example: 550e8400-e29b-41d4-a716-446655440001
+          nullable: true
+          type: string
+        last_update_date:
+          example: "2026-01-15T10:00:00Z"
+          type: string
+        name:
+          example: Microwave Oven
+          type: string
+        price:
+          example: 129.99
+          type: number
+        supplier_id:
+          example: 550e8400-e29b-41d4-a716-446655440000
+          type: string
+      type: object
+    SupplierCreateRequest:
+      properties:
+        address:
+          $ref: '#/components/schemas/AddressDTO'
+          type: object
+        name:
+          example: DNS
+          type: string
+        phone_number:
+          example: "+79959992299"
+          type: string
+      type: object
+    SupplierResponse:
+      properties:
+        address:
+          $ref: '#/components/schemas/AddressDTO'
+          type: object
+        id:
+          example: 550e8400-e29b-41d4-a716-446655440000
+          type: string
+        name:
+          example: DNS
+          type: string
+        phone_number:
+          example: "+79959992299"
+          type: string
+      type: object
+info:
+  description: REST API for an appliance store.
+  title: StoreAPI
+  version: 1.0.0
+openapi: 3.0.0
+paths:
+  /api/v1/clients:
+    get:
+      description: ' Returns all clients, optionally paginated, or searches clients
+        by first and last name.'
+      operationId: listClients
+      parameters:
+      - description: Client first name
+        in: query
+        name: first_name
+        schema:
+          description: Client first name
+          type: string
+      - description: Client last name
+        in: query
+        name: last_name
+        schema:
+          description: Client last name
+          type: string
+      - description: Maximum number of clients to return
+        in: query
+        name: limit
+        schema:
+          description: Maximum number of clients to return
+          format: int64
+          type: integer
+      - description: Number of clients to skip
+        in: query
+        name: offset
+        schema:
+          description: Number of clients to skip
+          format: int64
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientResponse'
+          description: Clients
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid query parameters
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error
+      tags:
+      - clients
+    post:
+      description: ' Creates a client together with its address.'
+      operationId: createClient
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientCreateRequest'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientResponse'
+          description: Client created successfully
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error
+      tags:
+      - clients
+  /api/v1/clients/{id}:
+    delete:
+      description: ' Deletes a client by its UUID.'
+      operationId: deleteClient
+      parameters:
+      - description: Client UUID
+        in: path
+        name: id
+        required: true
+        schema:
+          description: Client UUID
+          type: string
+      responses:
+        "204":
+          description: Client deleted successfully
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid UUID
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Client not found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error
+      tags:
+      - clients
+  /api/v1/clients/{id}/address:
+    patch:
+      description: ' Replaces the current address of a client.'
+      operationId: changeClientAddress
+      parameters:
+      - description: Client UUID
+        in: path
+        name: id
+        required: true
+        schema:
+          description: Client UUID
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressDTO'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientResponse'
+          description: Updated client
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid request
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Client not found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error
+      tags:
+      - clients
+  /api/v1/images:
+    post:
+      description: ' Adds an image. The image field must contain the image bytes encoded
+        as a Base64 string.'
+      operationId: createImage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageCreateRequest'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageResponse'
+          description: Created image identifiers
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid request or invalid Base64 data
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Product not found
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Product already has an image
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error
+      tags:
+      - images
+  /api/v1/images/{id}:
+    delete:
+      description: ' Deletes an image by its UUID.'
+      operationId: deleteImage
+      parameters:
+      - description: Image UUID
+        in: path
+        name: id
+        required: true
+        schema:
+          description: Image UUID
+          type: string
+      responses:
+        "204":
+          description: Image deleted successfully
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid UUID
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Image not found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error
+      tags:
+      - images
+    get:
+      description: ' Returns the binary image associated with an image UUID.'
+      operationId: getImage
+      parameters:
+      - description: Image UUID
+        in: path
+        name: id
+        required: true
+        schema:
+          description: Image UUID
+          type: string
+      responses:
+        "200":
+          description: Image bytes
+        "400":
+          content:
+            application/octet-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid UUID
+        "404":
+          content:
+            application/octet-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Image not found
+        "500":
+          content:
+            application/octet-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error
+      tags:
+      - images
+    put:
+      description: ' Replaces the binary data stored for an existing image. The image
+        field must contain the image bytes encoded as a Base64 string.'
+      operationId: replaceImage
+      parameters:
+      - description: Image UUID
+        in: path
+        name: id
+        required: true
+        schema:
+          description: Image UUID
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageReplaceRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageResponse'
+          description: Updated image identifiers
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid request or invalid Base64 data
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Image not found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error
+      tags:
+      - images
+  /api/v1/images/available:
+    get:
+      description: ' Returns the entire pull of images'
+      operationId: listAvailableImages
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+          description: Available images
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error
+      tags:
+      - images
+  /api/v1/products:
+    post:
+      description: ' Creates a new appliance product.'
+      operationId: createProduct
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductCreateRequest'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+          description: Product created successfully
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid request
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Supplier not found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error
+      tags:
+      - products
+  /api/v1/products/{id}:
+    delete:
+      description: ' Deletes a product by its UUID.'
+      operationId: deleteProduct
+      parameters:
+      - description: Product UUID
+        in: path
+        name: id
+        required: true
+        schema:
+          description: Product UUID
+          type: string
+      responses:
+        "204":
+          description: Product deleted successfully
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid UUID
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Product not found
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Delete conflicts with related data
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error
+      tags:
+      - products
+    get:
+      description: ' Returns a product by its UUID.'
+      operationId: getProduct
+      parameters:
+      - description: Product UUID
+        in: path
+        name: id
+        required: true
+        schema:
+          description: Product UUID
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+          description: Product
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid UUID
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Product not found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error
+      tags:
+      - products
+  /api/v1/products/{id}/image:
+    put:
+      description: ' Adds a photo to a product from the existing pool of photos'
+      operationId: addProductPhoto
+      parameters:
+      - description: Product UUID
+        in: path
+        name: id
+        required: true
+        schema:
+          description: Product UUID
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddProductPhotoRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+          description: Updated product photo
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid request
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Product not found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error
+      tags:
+      - products
+  /api/v1/products/{id}/stock:
+    patch:
+      description: ' Decreases the available stock of a product by the specified quantity.'
+      operationId: decreaseProductStock
+      parameters:
+      - description: Product UUID
+        in: path
+        name: id
+        required: true
+        schema:
+          description: Product UUID
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DecreaseStockRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+          description: Updated product
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid request
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Product not found
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Insufficient stock
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error
+      tags:
+      - products
+  /api/v1/products/{product_id}/image:
+    get:
+      description: ' Returns the binary image associated with a product.'
+      operationId: getProductImage
+      parameters:
+      - description: Product UUID
+        in: path
+        name: product_id
+        required: true
+        schema:
+          description: Product UUID
+          type: string
+      responses:
+        "200":
+          description: Image bytes
+        "400":
+          content:
+            application/octet-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid UUID
+        "404":
+          content:
+            application/octet-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Product image not found
+        "500":
+          content:
+            application/octet-stream:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error
+      tags:
+      - images
+  /api/v1/products/available:
+    get:
+      description: ' Returns all products whose available stock is greater than zero.'
+      operationId: listAvailableProducts
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+          description: Available products
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error
+      tags:
+      - products
+  /api/v1/suppliers:
+    get:
+      description: ' Returns all suppliers.'
+      operationId: listSuppliers
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupplierResponse'
+          description: Suppliers
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error
+      tags:
+      - suppliers
+    post:
+      description: ' Creates a supplier together with its address.'
+      operationId: createSupplier
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SupplierCreateRequest'
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupplierResponse'
+          description: Supplier created successfully
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid request
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error
+      tags:
+      - suppliers
+  /api/v1/suppliers/{id}:
+    delete:
+      description: ' Deletes a supplier by its UUID.'
+      operationId: deleteSupplier
+      parameters:
+      - description: Supplier UUID
+        in: path
+        name: id
+        required: true
+        schema:
+          description: Supplier UUID
+          type: string
+      responses:
+        "204":
+          description: Supplier deleted successfully
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid UUID
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Supplier not found
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Supplier cannot be deleted because related products exist
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error
+      tags:
+      - suppliers
+    get:
+      description: ' Returns a supplier by its UUID.'
+      operationId: getSupplier
+      parameters:
+      - description: Supplier UUID
+        in: path
+        name: id
+        required: true
+        schema:
+          description: Supplier UUID
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupplierResponse'
+          description: Supplier
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid UUID
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Supplier not found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error
+      tags:
+      - suppliers
+  /api/v1/suppliers/{id}/address:
+    patch:
+      description: ' Replaces the current address of a supplier.'
+      operationId: changeSupplierAddress
+      parameters:
+      - description: Supplier UUID
+        in: path
+        name: id
+        required: true
+        schema:
+          description: Supplier UUID
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressDTO'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupplierResponse'
+          description: Updated supplier
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Invalid request
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Supplier not found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Internal server error
+      tags:
+      - suppliers
+servers:
+- description: ' appliance store'
+  url: https://xoxotyh-appliance-store
