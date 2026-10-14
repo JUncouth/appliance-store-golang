@@ -1,0 +1,31 @@
+# appliance-store-golang — магазин бытовой техники
+
+Backend-приложение для управления товарами, клиентами и поставщиками.
+
+## Реализовано
+
+- REST API для работы с сущностями магазина
+- golang-style архитектура (слои)
+- использование nginx в качестве reverse-proxy, а также для load-balancing, кеширования, компрессии
+- хранение данных в PostgreSQL
+- документирование API с помощью Swagger/OpenAPI
+
+## Запуск
+
+- запуск осуществляется через docker-compose:
+```bash
+docker compose up -d --build
+```
+
+- конфигурация подключений и портов осуществляется в .env файле
+
+## Миграции
+
+- при запуске приложения происходит инициализация БД тестовыми данными
+
+## SWAGGER-документация
+
+- после запуска приложения доступна по адресу:
+https://xoxotyh-appliance-store/api или
+https://xoxotyh-appliance-store/api/v1 или
+https://xoxotyh-appliance-store/docs/swagger/index.html

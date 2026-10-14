@@ -2,14 +2,15 @@ services:
   postgres:
     image: postgres:18-alpine
     environment:
-      POSTGRES_DB: storeapi
-      POSTGRES_USER: storeapi
-      POSTGRES_PASSWORD: storeapi
+      POSTGRES_DB: $(POSTGRES_DB)
+      POSTGRES_USER: $(POSTGRES_USER)
+      POSTGRES_PASSWORD: $(POSTGRES_PASSWORD)
     ports:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql
       - ./migrations/001_init.sql:/docker-entrypoint-initdb.d/001_init.sql:ro
+      - ./migrations/002_init.sql:/docker-entrypoint-initdb.d/002_init.sql:ro
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U storeapi -d storeapi" ]
       interval: 5s
@@ -20,9 +21,9 @@ services:
     build: .
     image: storeapi:latest
     environment:
-      HTTP_PORT: 8081
-      DATABASE_URL: postgres://storeapi:storeapi@postgres:5432/storeapi?sslmode=disable
-      SHUTDOWN_TIMEOUT: 10s
+      HTTP_PORT: $(HTTP_MAIN_PORT)
+      DATABASE_URL: $(DATABASE_MAIN_URL)
+      SHUTDOWN_TIMEOUT: $(SHUTDOWN_TIMEOUT)
     ports:
       - "8081:8081"
     depends_on:
@@ -33,9 +34,9 @@ services:
     # build: .
     image: storeapi:latest
     environment:
-      HTTP_PORT: 8082
-      DATABASE_URL: postgres://readonly:readonly@postgres:5432/storeapi?sslmode=disable
-      SHUTDOWN_TIMEOUT: 10s
+      HTTP_PORT: $(HTTP_2_PORT)
+      DATABASE_URL: $(DATABASE_RO_URL)
+      SHUTDOWN_TIMEOUT: $(SHUTDOWN_TIMEOUT)
     ports:
       - "8082:8082"
     depends_on:
@@ -46,9 +47,9 @@ services:
     # build: .
     image: storeapi:latest
     environment:
-      HTTP_PORT: 8083
-      DATABASE_URL: postgres://readonly:readonly@postgres:5432/storeapi?sslmode=disable
-      SHUTDOWN_TIMEOUT: 10s
+      HTTP_PORT: $(HTTP_3_PORT)
+      DATABASE_URL: $(DATABASE_RO_URL)
+      SHUTDOWN_TIMEOUT: $(SHUTDOWN_TIMEOUT)
     ports:
       - "8083:8083"
     depends_on:
@@ -58,9 +59,9 @@ services:
   pgadmin:
     image: dpage/pgadmin4:8
     environment:
-      PGADMIN_DEFAULT_EMAIL: pgadmin@mail.com
-      PGADMIN_DEFAULT_PASSWORD: secret
-      PGADMIN_LISTEN_PORT: 8084
+      PGADMIN_DEFAULT_EMAIL: $(PGADMIN_DEFAULT_EMAIL)
+      PGADMIN_DEFAULT_PASSWORD: $(PGADMIN_DEFAULT_PASSWORD)
+      PGADMIN_LISTEN_PORT: $(PGADMIN_LISTEN_PORT)
     ports:
       - "8084:8084"
     depends_on:
